@@ -1,0 +1,50 @@
+$max-width: 420px;
+
+.nav_bar {
+  min-width: 100vw;
+  max-width: $max-width;
+  position: fixed;
+  bottom: 0;
+  height: 6.5vh;
+  background-color: #7b7b7b;
+  padding: 10px 0; /* 패딩을 조정해 보세요 */
+  box-shadow: 0 0px 10px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+
+.nav_bar_content {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+}
+
+.nav_bar_icon {
+  width: 25%;
+  display: flex;
+  justify-content: center;
+}
+
+// Link 스타일 (기본 상태)
+.nav-link {
+  color: rgb(255, 255, 255);
+  font-size: 20px;
+  font-weight: bold;
+  text-decoration: none; // 밑줄 제거
+  transition: color 0.3s ease; // 색상 전환 효과
+}
+
+// 활성 상태인 Link 스타일
+.nav-link.active {
+  color: #ffd700; // 원하는 활성화된 상태의 색상으로 변경
+}
+
+// Link hover 스타일 (선택 사항)
+.nav-link:hover {
+  color: #ffd700; // hover 시 색상 변화
+}
+
+@media (min-width: $max-width) {
+  .nav_bar {
+    min-width: $max-width; // 반응형으로 최대 너비 제한
+  }
+}
