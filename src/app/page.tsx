@@ -8,14 +8,11 @@ import { faUser } from '@fortawesome/free-solid-svg-icons';
 import Calendar from '../components/calendar';
 import NicknameModal from '../components/modal/nicknamemodal';
 import '../styles/pages/main.scss';
-import {
-  messaging,
-  getToken,
-} from '../../firebase/firebase-config';
+
 import NotificationModal from '../components/modal/notificationmodal';
 import Image from 'next/image';
 import { handleLogin } from '@/function/handlelogin';
-
+import { requestFcmToken } from '@/function/requestFcmToken';
 // 동적 페이지에 적용
 export const dynamic = 'force-dynamic';
 
@@ -89,7 +86,7 @@ const Main: React.FC = () => {
             '토큰 재발급 중 오류 발생:',
             refreshError
           );
-          router.push('/login'); // 토큰 재발급 실패 시 로그인 페이지로 이동
+          router.push('/'); // 토큰 재발급 실패 시 로그인 페이지로 이동
         }
       } finally {
         setLoading(false);
@@ -130,39 +127,6 @@ const Main: React.FC = () => {
 
     checkNotificationPermission();
   }, []);
-
-  const requestFcmToken = async () => {
-    try {
-      const fcmToken = await getToken(messaging);
-      const storedFcmToken =
-        localStorage.getItem('fcmToken');
-
-      if (fcmToken && fcmToken !== storedFcmToken) {
-        const fcmResponse = await axios.post(
-          '/api/save-token',
-          {
-            token: fcmToken,
-            userId: localStorage.getItem('userId'),
-          }
-        );
-
-        localStorage.setItem(
-          'fcmToken',
-          fcmResponse.data.token
-        );
-        console.log(
-          'FCM 토큰이 로컬 스토리지에 저장되었습니다.'
-        );
-      } else {
-        console.warn('FCM 토큰을 가져올 수 없습니다.');
-      }
-    } catch (fcmError) {
-      console.error(
-        'FCM 토큰 요청 중 오류 발생:',
-        fcmError
-      );
-    }
-  };
 
   const requestNotificationPermission = async () => {
     const permission =

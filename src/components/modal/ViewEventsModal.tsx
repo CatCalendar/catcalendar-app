@@ -10,7 +10,7 @@ import {
   removeEvent,
   addEvent,
 } from '../../store/eventsSlice';
-import EventModal from './eventmodal';
+import EventModal from './EventModal';
 import axios from 'axios'; // axios 추가
 import { message } from 'antd';
 
