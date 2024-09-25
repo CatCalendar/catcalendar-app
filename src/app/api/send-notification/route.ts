@@ -5,6 +5,14 @@ import { sendFCMNotification } from '../../../../firebase/admin-config'; // 서�
 // POST 요청 처리
 export async function POST(request: Request) {
   try {
+    const contentType = request.headers.get('content-type');
+    if (contentType !== 'application/json') {
+      return NextResponse.json(
+        { error: '잘못된 콘텐츠 타입' },
+        { status: 400 }
+      );
+    }
+
     const { message } = await request.json(); // 요청 본문에서 메시지 데이터 가져오기
 
     // 서버에서 FCM 푸시 알림 전송
