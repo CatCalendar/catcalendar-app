@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import '../styles/components/ViewEventsModal.scss';
+import '../../styles/components/vieweventsmodal.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import { useDispatch } from 'react-redux';

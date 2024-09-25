@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import '../styles/components/EventModal.scss';
+import '../../styles/components/eventmodal.scss';
 import {
   CustomEvent,
   addEvent,

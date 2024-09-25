@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import '../styles/components/Calendar.scss'; // CSS 모듈로 변경
+import '../styles/components/calendar.scss'; // CSS 모듈로 변경
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faChevronLeft,

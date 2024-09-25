@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 import Calendar from '../components/calendar';
 import NicknameModal from '../components/modal/nicknamemodal';
-import '../../styles/pages/main.scss';
+import '../styles/pages/main.scss';
 import {
   messaging,
   getToken,
