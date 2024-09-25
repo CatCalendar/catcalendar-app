@@ -24,7 +24,6 @@ interface User {
 
 const Main: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const router = useRouter();
@@ -35,7 +34,10 @@ const Main: React.FC = () => {
 
       const userId = localStorage.getItem('userId');
       const token = localStorage.getItem('token');
-
+      if (!userId || !token) {
+        console.log('사용자 정보가 없습니다.');
+        return;
+      }
       try {
         // 사용자 정보 요청
         const userInfoResponse = await axios.get(
@@ -86,10 +88,7 @@ const Main: React.FC = () => {
             '토큰 재발급 중 오류 발생:',
             refreshError
           );
-          router.push('/'); // 토큰 재발급 실패 시 로그인 페이지로 이동
         }
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -162,10 +161,6 @@ const Main: React.FC = () => {
     requestNotificationPermission();
     setModalVisible(false);
   };
-
-  if (loading) {
-    return <p>로딩 중...</p>;
-  }
 
   return (
     <div className="main-page">
