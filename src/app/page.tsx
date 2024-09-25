@@ -15,6 +15,7 @@ import {
 import NotificationModal from '../components/modal/notificationmodal';
 import Image from 'next/image';
 import { handleLogin } from '@/function/handlelogin';
+
 // 동적 페이지에 적용
 export const dynamic = 'force-dynamic';
 
@@ -33,8 +34,18 @@ const Main: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      if (typeof window === 'undefined') return; // 서버사이드 렌더링 환경 방지
+
       const userId = localStorage.getItem('userId');
       const token = localStorage.getItem('token');
+
+      if (!userId || !token) {
+        console.error(
+          '로그인 정보가 없습니다. 로그인 페이지로 이동합니다.'
+        );
+        router.push('/login');
+        return;
+      }
 
       try {
         // 사용자 정보 요청
@@ -57,12 +68,10 @@ const Main: React.FC = () => {
         );
 
         try {
-          // 오류가 발생하면 토큰을 재발급하고 다시 요청
+          // 토큰 재발급 시도
           const refreshResponse = await axios.post(
             '/api/user/refreshToken',
-            {
-              userId,
-            }
+            { userId }
           );
           const newToken = refreshResponse.data.token;
 
@@ -88,6 +97,7 @@ const Main: React.FC = () => {
             '토큰 재발급 중 오류 발생:',
             refreshError
           );
+          router.push('/login'); // 토큰 재발급 실패 시 로그인 페이지로 이동
         }
       } finally {
         setLoading(false);
@@ -99,6 +109,8 @@ const Main: React.FC = () => {
 
   useEffect(() => {
     const checkNotificationPermission = async () => {
+      if (typeof window === 'undefined') return; // 서버사이드 렌더링 환경 방지
+
       const storedPermission = localStorage.getItem(
         'notificationPermission'
       );
@@ -220,7 +232,6 @@ const Main: React.FC = () => {
         ) : (
           <>
             <p>로그인이 필요합니다.</p>
-            {/* 클릭 가능한 div */}
             <div
               className="login-button"
               onClick={handleLogin}
@@ -232,7 +243,6 @@ const Main: React.FC = () => {
       </div>
       <Calendar />
 
-      {/* 닉네임 설정 모달 */}
       {isModalOpen && user && (
         <NicknameModal
           userId={user.id.toString()}
@@ -242,7 +252,6 @@ const Main: React.FC = () => {
         />
       )}
 
-      {/* 알림 권한 요청 모달창 */}
       <NotificationModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
