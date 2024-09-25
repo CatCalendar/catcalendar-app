@@ -2,8 +2,6 @@ import type { Metadata } from 'next';
 import React from 'react';
 import Navigation from '../components/navigation';
 import '../styles/global.scss';
-import { Provider } from 'react-redux';
-import { store } from '../store/store'; // 적절한 경로로 store 가져오기
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -18,12 +16,10 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body>
-        <Provider store={store}>
-          <div className="wrap">
-            <div className="is_nav">{children}</div>
-            <Navigation />
-          </div>
-        </Provider>
+        <div className="wrap">
+          <div className="is_nav">{children}</div>
+          <Navigation />
+        </div>
       </body>
     </html>
   );
