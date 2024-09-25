@@ -2,11 +2,25 @@
 
 import React from 'react';
 import { handleLogin } from '../function/handlelogin';
+
 const Main: React.FC = () => {
   return (
     <div>
       {/* 클릭 가능한 div */}
-      <div onClick={handleLogin}>Login</div>
+      <div
+        onClick={handleLogin}
+        style={{
+          cursor: 'pointer',
+          padding: '10px',
+          backgroundColor: '#007bff',
+          color: 'white',
+          borderRadius: '5px',
+          textAlign: 'center',
+          width: '100px',
+        }}
+      >
+        Login
+      </div>
       <p>Main</p>
     </div>
   );
