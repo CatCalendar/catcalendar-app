@@ -2,11 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import '../../styles/components/eventmodal.scss';
-import {
-  CustomEvent,
-  addEvent,
-  removeEvent,
-} from '../../store/eventsSlice';
+import { CustomEvent } from '../../store/eventsSlice';
 import { message } from 'antd';
 import axios from 'axios';
 interface EventModalProps {

@@ -14,7 +14,6 @@ const NicknameModal: React.FC<NicknameModalProps> = ({
   userId,
   token,
   onSubmitSuccess,
-  onClose,
 }) => {
   const [nickname, setNickname] = useState('');
   const [errorMessage, setErrorMessage] = useState('');

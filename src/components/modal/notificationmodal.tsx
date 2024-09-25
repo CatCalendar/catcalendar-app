@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import '../../styles/components/notificationmodal.scss'; // 모달 스타일 가져오기
 
 interface NotificationModalProps {
