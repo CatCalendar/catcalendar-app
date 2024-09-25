@@ -1,10 +1,7 @@
-'use client'; // 클라이언트 컴포넌트임을 명시
-
 import type { Metadata } from 'next';
 import React from 'react';
-import { Provider } from 'react-redux';
-import { store } from '../store/store'; // store를 import
 import Navigation from '../components/navigation';
+import ClientProvider from './ClientProvider'; // 새로 만든 ClientProvider 컴포넌트를 import
 import '../styles/global.scss';
 
 export const metadata: Metadata = {
@@ -20,12 +17,12 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body>
-        <Provider store={store}>
+        <ClientProvider>
           <div className="wrap">
             <div className="is_nav">{children}</div>
             <Navigation />
           </div>
-        </Provider>
+        </ClientProvider>
       </body>
     </html>
   );
