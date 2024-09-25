@@ -1,0 +1,93 @@
+.calendar-container {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.calendar-header select,
+.calendar-header button {
+  font-size: 16px;
+  padding: 5px;
+}
+
+.calendar-header-text {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.calendar-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.days-of-week {
+  display: flex;
+}
+
+.day-of-week {
+  flex: 1;
+  text-align: center;
+  font-weight: bold;
+  padding: 10px 0;
+}
+
+.sunday {
+  color: rgb(255, 129, 129);
+}
+
+.saturday {
+  color: rgb(81, 127, 255);
+}
+
+.dates {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.date,
+.empty-slot {
+  width: calc(100% / 7);
+  text-align: center;
+  padding: 10px 0;
+  box-sizing: border-box;
+  color: rgb(99, 99, 99);
+}
+
+.date {
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently supported by Chrome, Opera and Edge */
+}
+
+.date.sunday {
+  color: rgb(255, 129, 129);
+}
+
+.date.saturday {
+  color: rgb(81, 127, 255);
+}
+
+.date {
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.date:hover {
+  background-color: #f0f0f0;
+}
+
+.event-count {
+  padding: 0;
+  margin-top: 10px;
+}
