@@ -64,12 +64,10 @@ export async function GET(request: NextRequest) {
     );
 
     let userId: number;
-    let nickname: string | null = null;
 
     if (existingUsers.length > 0) {
       const user = existingUsers[0];
       userId = user.id;
-      nickname = user.nickname || null;
     } else {
       // 새로운 사용자 추가, 닉네임이 아직 없을 경우 null로 저장
       const [result] = await db.query<OkPacket>(

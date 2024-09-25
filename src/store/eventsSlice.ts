@@ -28,11 +28,12 @@ const loadState = (): EventsState => {
       return { events: [] }; // 로컬 저장소에 데이터가 없으면 초기값 반환
     }
     const parsedEvents = JSON.parse(serializedState).map(
-      (event: any) => ({
+      (event: CustomEvent) => ({
         ...event,
         date: new Date(event.date), // 문자열로 저장된 날짜를 Date 객체로 변환
       })
     );
+
     return { events: parsedEvents };
   } catch (err) {
     console.error('Could not load state', err);
