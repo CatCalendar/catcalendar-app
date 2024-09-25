@@ -36,11 +36,6 @@ const Main: React.FC = () => {
       const userId = localStorage.getItem('userId');
       const token = localStorage.getItem('token');
 
-      if (!userId || !token) {
-        router.push('/login');
-        return;
-      }
-
       try {
         // 사용자 정보 요청
         const userInfoResponse = await axios.get(
