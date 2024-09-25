@@ -13,6 +13,9 @@ import NotificationModal from '../components/modal/notificationmodal';
 import Image from 'next/image';
 import { handleLogin } from '@/function/handlelogin';
 import { requestFcmToken } from '@/function/requestFcmToken';
+import { useDispatch } from 'react-redux';
+import { setEvents, loadState } from '../store/eventsSlice'; // 적절한 경로로 import
+
 // 동적 페이지에 적용
 export const dynamic = 'force-dynamic';
 
@@ -27,6 +30,18 @@ const Main: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const router = useRouter();
+
+  const dispatch = useDispatch();
+
+  // 클라이언트에서만 localStorage에서 상태 불러오기
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const loadedState = loadState(); // localStorage에서 상태를 불러옴
+      if (loadedState.events.length > 0) {
+        dispatch(setEvents(loadedState.events)); // Redux 상태에 로드된 이벤트 저장
+      }
+    }
+  }, [dispatch]);
 
   useEffect(() => {
     const fetchData = async () => {

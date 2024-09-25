@@ -16,7 +16,7 @@ export interface EventsState {
 }
 
 // 로컬 저장소에서 상태를 불러오는 함수 (클라이언트에서만 실행)
-const loadState = (): EventsState => {
+export const loadState = (): EventsState => {
   if (typeof window === 'undefined') {
     // 서버 사이드에서는 빈 상태 반환
     return { events: [] };
@@ -60,7 +60,8 @@ export const saveState = (state: EventsState) => {
   }
 };
 
-const initialState: EventsState = loadState(); // 초기 상태를 로컬 저장소에서 불러옴
+const initialState: EventsState = { events: [] }; // 기본 빈 배열로 초기화
+// 초기 상태를 로컬 저장소에서 불러옴
 
 const eventsSlice = createSlice({
   name: 'events',
