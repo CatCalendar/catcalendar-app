@@ -1,5 +1,9 @@
+'use client'; // 클라이언트 컴포넌트임을 명시
+
 import type { Metadata } from 'next';
 import React from 'react';
+import { Provider } from 'react-redux';
+import { store } from '../store/store'; // store를 import
 import Navigation from '../components/navigation';
 import '../styles/global.scss';
 
@@ -16,10 +20,12 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body>
-        <div className="wrap">
-          <div className="is_nav">{children}</div>
-          <Navigation />
-        </div>
+        <Provider store={store}>
+          <div className="wrap">
+            <div className="is_nav">{children}</div>
+            <Navigation />
+          </div>
+        </Provider>
       </body>
     </html>
   );
