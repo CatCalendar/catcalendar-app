@@ -1,23 +1,21 @@
-import {
-  messaging,
-  getToken,
-} from '../../firebase/firebase-config';
 import axios from 'axios';
+import { getToken } from 'firebase/messaging';
 
-export const requestFcmToken = async () => {
+// FCM 토큰 요청 및 저장 함수
+export const requestFcmToken = async (
+  messaging: any,
+  userId: string
+) => {
   try {
     const fcmToken = await getToken(messaging);
-    const storedFcmToken = localStorage.getItem('fcmToken');
-
-    if (fcmToken && fcmToken !== storedFcmToken) {
+    if (fcmToken) {
       const fcmResponse = await axios.post(
         '/api/save-token',
         {
           token: fcmToken,
-          userId: localStorage.getItem('userId'),
+          userId: userId,
         }
       );
-
       localStorage.setItem(
         'fcmToken',
         fcmResponse.data.token

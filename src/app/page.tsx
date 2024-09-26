@@ -12,9 +12,10 @@ import '../styles/pages/main.scss';
 import NotificationModal from '../components/modal/notificationmodal';
 import Image from 'next/image';
 import { handleLogin } from '@/function/handlelogin';
-import { requestFcmToken } from '@/function/requestFcmToken';
+import { requestFcmToken } from '@/function/requestFcmToken'; // import requestFcmToken
 import { useDispatch } from 'react-redux';
 import { setEvents, loadState } from '../store/eventsSlice'; // 적절한 경로로 import
+import { messaging } from '../../firebase/firebase-config'; // import messaging
 
 // 동적 페이지에 적용
 export const dynamic = 'force-dynamic';
@@ -110,9 +111,10 @@ const Main: React.FC = () => {
     fetchData();
   }, [router]);
 
+  // 권한 체크 함수
   useEffect(() => {
     const checkNotificationPermission = async () => {
-      if (typeof window === 'undefined') return; // 서버사이드 렌더링 환경 방지
+      if (typeof window === 'undefined' || !user) return; // 서버사이드 렌더링 환경 및 user 상태 확인
 
       const storedPermission = localStorage.getItem(
         'notificationPermission'
@@ -121,7 +123,7 @@ const Main: React.FC = () => {
         Notification.permission === 'default' &&
         !storedPermission
       ) {
-        setModalVisible(true);
+        setModalVisible(true); // 권한 요청 모달 열기
       } else if (
         Notification.permission === 'granted' &&
         !storedPermission
@@ -130,7 +132,10 @@ const Main: React.FC = () => {
           'notificationPermission',
           'granted'
         );
-        requestFcmToken();
+        await requestFcmToken(
+          messaging,
+          user!.id.toString()
+        ); // 파라미터로 messaging과 userId 전달
       } else if (Notification.permission === 'denied') {
         localStorage.setItem(
           'notificationPermission',
@@ -140,7 +145,7 @@ const Main: React.FC = () => {
     };
 
     checkNotificationPermission();
-  }, []);
+  }, [user]); // user 상태가 변경될 때만 실행
 
   const requestNotificationPermission = async () => {
     const permission =
@@ -150,7 +155,7 @@ const Main: React.FC = () => {
         'notificationPermission',
         'granted'
       );
-      requestFcmToken();
+      await requestFcmToken(messaging, user!.id.toString()); // 파라미터로 messaging과 userId 전달
     } else if (permission === 'denied') {
       localStorage.setItem(
         'notificationPermission',
