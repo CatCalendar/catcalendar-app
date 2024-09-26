@@ -3,10 +3,6 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
-import {
-  messaging,
-  getToken,
-} from '../../../firebase/firebase-config';
 
 // 동적 페이지에 적용
 export const dynamic = 'force-dynamic';

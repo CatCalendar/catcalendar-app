@@ -1,9 +1,9 @@
 import axios from 'axios';
-import { getToken } from 'firebase/messaging';
+import { getToken, Messaging } from 'firebase/messaging';
 
 // FCM 토큰 요청 및 저장 함수
 export const requestFcmToken = async (
-  messaging: any,
+  messaging: Messaging, // Firebase Messaging 타입 지정
   userId: string
 ) => {
   try {

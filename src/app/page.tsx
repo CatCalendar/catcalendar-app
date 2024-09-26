@@ -15,7 +15,8 @@ import { handleLogin } from '@/function/handlelogin';
 import { requestFcmToken } from '@/function/requestFcmToken'; // import requestFcmToken
 import { useDispatch } from 'react-redux';
 import { setEvents, loadState } from '../store/eventsSlice'; // 적절한 경로로 import
-import { messaging } from '../../firebase/firebase-config'; // import messaging
+import { messaging } from '../../firebase/firebase-config'; // Firebase Messaging import
+import { Messaging } from 'firebase/messaging'; // Messaging 타입 import
 
 // 동적 페이지에 적용
 export const dynamic = 'force-dynamic';
@@ -133,7 +134,7 @@ const Main: React.FC = () => {
           'granted'
         );
         await requestFcmToken(
-          messaging,
+          messaging as Messaging,
           user!.id.toString()
         ); // 파라미터로 messaging과 userId 전달
       } else if (Notification.permission === 'denied') {
@@ -155,7 +156,10 @@ const Main: React.FC = () => {
         'notificationPermission',
         'granted'
       );
-      await requestFcmToken(messaging, user!.id.toString()); // 파라미터로 messaging과 userId 전달
+      await requestFcmToken(
+        messaging as Messaging,
+        user!.id.toString()
+      ); // 파라미터로 messaging과 userId 전달
     } else if (permission === 'denied') {
       localStorage.setItem(
         'notificationPermission',
