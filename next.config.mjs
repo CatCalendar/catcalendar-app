@@ -17,7 +17,19 @@ const pwaConfig = {
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  output: 'standalone', // 추가: 독립 실행을 위한 설정
+  output: 'standalone', // 독립 실행을 위한 설정
+
+  // 외부 이미지 도메인 허용 설정 추가
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: 'k.kakaocdn.net', // 이미지 도메인 추가
+        port: '', // 특정 포트가 없으면 빈 문자열로 둡니다.
+        pathname: '/**', // 모든 경로 허용
+      },
+    ],
+  },
 
   // Webpack 설정 추가
   webpack: (config, { isServer }) => {
