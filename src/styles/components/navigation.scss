@@ -35,12 +35,16 @@ $max-width: 420px;
 
 // 활성 상태인 Link 스타일
 .nav-link.active {
-  color: #ffd700; // 원하는 활성화된 상태의 색상으로 변경
+  color: rgb(
+    81,
+    127,
+    255
+  ); // 원하는 활성화된 상태의 색상으로 변경
 }
 
 // Link hover 스타일 (선택 사항)
 .nav-link:hover {
-  color: #ffd700; // hover 시 색상 변화
+  color: rgb(81, 127, 255); // hover 시 색상 변화
 }
 
 @media (min-width: $max-width) {

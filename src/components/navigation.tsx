@@ -1,11 +1,19 @@
 'use client'; // 클라이언트 컴포넌트임을 명시
 
 import React from 'react';
-import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import '../styles/components/navigation.scss';
+import {
+  faCalendar,
+  faCircleUser,
+  faGear,
+  faList,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { usePathname, useRouter } from 'next/navigation';
 
 const Navigation: React.FC = () => {
+  const router = useRouter(); // 새로운 useRouter 사용
   const pathname = usePathname(); // 경로를 가져오기 위해 usePathname 사용
 
   // 사용할 경로를 배열로 정의
@@ -21,49 +29,68 @@ const Navigation: React.FC = () => {
     return null;
   }
 
+  // 페이지 이동 함수 정의
+  const handleNavigation = (path: string) => {
+    router.push(path);
+  };
   return (
     <div className="nav_bar">
       <div className="nav_bar_content">
-        <Link
-          href="/"
-          className={
-            pathname === '/'
-              ? 'nav-link active'
-              : 'nav-link'
-          }
+        {/* ProfilePage */}
+        <div
+          className="nav_bar_icon"
+          onClick={() => handleNavigation('/userInfo')}
         >
-          Main
-        </Link>
-        <Link
-          href="/mylist"
-          className={
-            pathname === '/mylist'
-              ? 'nav-link active'
-              : 'nav-link'
-          }
+          <FontAwesomeIcon
+            icon={faCircleUser}
+            className={
+              pathname === '/userinfo'
+                ? 'nav-link active'
+                : 'nav-link'
+            }
+          />
+        </div>
+        {/* MainPage */}
+        <div
+          className="nav_bar_icon"
+          onClick={() => handleNavigation('/main')}
         >
-          mylist
-        </Link>
-        <Link
-          href="/userinfo"
-          className={
-            pathname === '/userinfo'
-              ? 'nav-link active'
-              : 'nav-link'
-          }
+          <FontAwesomeIcon
+            icon={faCalendar}
+            className={
+              pathname === '/main'
+                ? 'nav-link active'
+                : 'nav-link'
+            }
+          />
+        </div>
+        {/* SettingPage */}
+        <div
+          className="nav_bar_icon"
+          onClick={() => handleNavigation('/allList')}
         >
-          userinfo
-        </Link>
-        <Link
-          href="/set"
-          className={
-            pathname === '/set'
-              ? 'nav-link active'
-              : 'nav-link'
-          }
+          <FontAwesomeIcon
+            icon={faList}
+            className={
+              pathname === '/alllist'
+                ? 'nav-link active'
+                : 'nav-link'
+            }
+          />
+        </div>
+        <div
+          className="nav_bar_icon"
+          onClick={() => handleNavigation('/settings')}
         >
-          set
-        </Link>
+          <FontAwesomeIcon
+            icon={faGear}
+            className={
+              pathname === '/settings'
+                ? 'nav-link active'
+                : 'nav-link'
+            }
+          />
+        </div>
       </div>
     </div>
   );
