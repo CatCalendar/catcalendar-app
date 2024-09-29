@@ -17,7 +17,7 @@ const Navigation: React.FC = () => {
 
   // 사용할 경로를 배열로 정의
   const allowedPaths: string[] = [
-    '/',
+    '/main',
     '/mylist',
     '/userinfo',
     '/set',
@@ -52,12 +52,12 @@ const Navigation: React.FC = () => {
         {/* MainPage */}
         <div
           className="nav_bar_icon"
-          onClick={() => handleNavigation('/')}
+          onClick={() => handleNavigation('/main')}
         >
           <FontAwesomeIcon
             icon={faCalendar}
             className={
-              pathname === '/'
+              pathname === '/main'
                 ? 'nav-link active'
                 : 'nav-link'
             }

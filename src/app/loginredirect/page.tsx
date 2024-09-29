@@ -34,7 +34,7 @@ const LoginRedirect: React.FC = () => {
           localStorage.setItem('token', token);
           localStorage.setItem('userId', userId.toString());
 
-          router.push('/'); // 메인 페이지로 리다이렉트
+          router.push('/main'); // 메인 페이지로 리다이렉트
         } catch (error) {
           if (axios.isAxiosError(error)) {
             console.error(
