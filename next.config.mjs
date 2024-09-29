@@ -24,9 +24,13 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'http',
-        hostname: 'k.kakaocdn.net', // 이미지 도메인 추가
-        port: '', // 특정 포트가 없으면 빈 문자열로 둡니다.
-        pathname: '/**', // 모든 경로 허용
+        hostname: 'k.kakaocdn.net',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'img1.kakaocdn.net',
+        pathname: '/**',
       },
     ],
   },
