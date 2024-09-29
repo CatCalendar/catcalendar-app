@@ -38,7 +38,7 @@ const Navigation: React.FC = () => {
         {/* ProfilePage */}
         <div
           className="nav_bar_icon"
-          onClick={() => handleNavigation('/userInfo')}
+          onClick={() => handleNavigation('/userinfo')}
         >
           <FontAwesomeIcon
             icon={faCircleUser}
@@ -52,12 +52,12 @@ const Navigation: React.FC = () => {
         {/* MainPage */}
         <div
           className="nav_bar_icon"
-          onClick={() => handleNavigation('/main')}
+          onClick={() => handleNavigation('/')}
         >
           <FontAwesomeIcon
             icon={faCalendar}
             className={
-              pathname === '/main'
+              pathname === '/'
                 ? 'nav-link active'
                 : 'nav-link'
             }
@@ -66,12 +66,12 @@ const Navigation: React.FC = () => {
         {/* SettingPage */}
         <div
           className="nav_bar_icon"
-          onClick={() => handleNavigation('/allList')}
+          onClick={() => handleNavigation('/mylist')}
         >
           <FontAwesomeIcon
             icon={faList}
             className={
-              pathname === '/alllist'
+              pathname === '/mylist'
                 ? 'nav-link active'
                 : 'nav-link'
             }
@@ -79,12 +79,12 @@ const Navigation: React.FC = () => {
         </div>
         <div
           className="nav_bar_icon"
-          onClick={() => handleNavigation('/settings')}
+          onClick={() => handleNavigation('/set')}
         >
           <FontAwesomeIcon
             icon={faGear}
             className={
-              pathname === '/settings'
+              pathname === '/set'
                 ? 'nav-link active'
                 : 'nav-link'
             }
