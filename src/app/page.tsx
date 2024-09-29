@@ -1,25 +1,21 @@
-'use client'; // 클라이언트 컴포넌트임을 명시
+'use client';
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser } from '@fortawesome/free-solid-svg-icons';
 import Calendar from '../components/calendar';
 import NicknameModal from '../components/modal/nicknamemodal';
 import '../styles/pages/main.scss';
-
 import NotificationModal from '../components/modal/notificationmodal';
 import Image from 'next/image';
 import { handleLogin } from '@/function/handlelogin';
-import { requestFcmToken } from '@/function/requestFcmToken'; // import requestFcmToken
+import { requestFcmToken } from '@/function/requestFcmToken';
 import { useDispatch } from 'react-redux';
-import { setEvents, loadState } from '../store/eventsSlice'; // 적절한 경로로 import
-import { messaging } from '../../firebase/firebase-config'; // Firebase Messaging import
-import { Messaging } from 'firebase/messaging'; // Messaging 타입 import
-
-// 동적 페이지에 적용
-export const dynamic = 'force-dynamic';
+import { setEvents, loadState } from '../store/eventsSlice';
+import { messaging } from '../../firebase/firebase-config';
+import { Messaging } from 'firebase/messaging';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
 
 interface User {
   id: number;
@@ -32,124 +28,83 @@ const Main: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const router = useRouter();
-
   const dispatch = useDispatch();
 
-  // 클라이언트에서만 localStorage에서 상태 불러오기
+  // 1. 로컬 스토리지에서 user 정보를 불러옴
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
+  // 2. 클라이언트에서만 localStorage에서 상태 불러오기
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const loadedState = loadState(); // localStorage에서 상태를 불러옴
+      const loadedState = loadState();
       if (loadedState.events.length > 0) {
-        dispatch(setEvents(loadedState.events)); // Redux 상태에 로드된 이벤트 저장
+        dispatch(setEvents(loadedState.events));
       }
     }
   }, [dispatch]);
 
+  // 3. 토큰만 갱신하는 함수
+  const refreshToken = async (userId: string) => {
+    try {
+      const refreshResponse = await axios.post(
+        '/api/user/refreshToken',
+        { userId }
+      );
+      const newToken = refreshResponse.data.token;
+      localStorage.setItem('token', newToken);
+      console.log('새 토큰이 발급되었습니다.');
+    } catch (refreshError) {
+      console.error(
+        '토큰 재발급 중 오류 발생:',
+        refreshError
+      );
+    }
+  };
+
+  // 4. 토큰을 새로 갱신하고 user 정보가 없으면 서버에서 가져오기
   useEffect(() => {
     const fetchData = async () => {
-      if (typeof window === 'undefined') return; // 서버사이드 렌더링 환경 방지
-
       const userId = localStorage.getItem('userId');
       const token = localStorage.getItem('token');
 
-      console.log('userId:', userId);
-      console.log('token:', token);
       if (!userId || !token) {
         console.log('사용자 정보가 없습니다.');
         return;
       }
-      try {
-        // 사용자 정보 요청
-        const userInfoResponse = await axios.get(
-          `/api/user/info?user_id=${userId}`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        setUser(userInfoResponse.data);
-        console.log('사용자 정보:', userInfoResponse.data);
-        // 닉네임이 없으면 모달창 열기
-        if (!userInfoResponse.data.nickname) {
-          setIsModalOpen(true);
-        }
-      } catch (error) {
-        console.error(
-          '사용자 정보를 가져오는 중 오류 발생:',
-          error
-        );
 
+      // 5. 로컬에 저장된 user 정보가 없으면 서버에서 불러옴
+      if (!user) {
         try {
-          // 토큰 재발급 시도
-          const refreshResponse = await axios.post(
-            '/api/user/refreshToken',
-            { userId }
-          );
-          const newToken = refreshResponse.data.token;
-
-          localStorage.setItem('token', newToken);
-          console.log('새 토큰이 발급되었습니다.');
-
-          // 새 토큰으로 사용자 정보 다시 요청
-          const retryResponse = await axios.get(
+          const userInfoResponse = await axios.get(
             `/api/user/info?user_id=${userId}`,
             {
-              headers: {
-                Authorization: `Bearer ${newToken}`,
-              },
+              headers: { Authorization: `Bearer ${token}` },
             }
           );
-          setUser(retryResponse.data);
-
-          if (!retryResponse.data.nickname) {
-            setIsModalOpen(true);
-          }
-        } catch (refreshError) {
+          setUser(userInfoResponse.data);
+          localStorage.setItem(
+            'user',
+            JSON.stringify(userInfoResponse.data)
+          ); // user 정보 로컬에 저장
+        } catch (error) {
           console.error(
-            '토큰 재발급 중 오류 발생:',
-            refreshError
+            '사용자 정보를 가져오는 중 오류 발생:',
+            error
           );
         }
+      } else {
+        // 6. 이미 로컬에 user 정보가 있으면 토큰만 갱신
+        await refreshToken(userId);
       }
     };
 
     fetchData();
-  }, [router]);
-
-  // 권한 체크 함수
-  useEffect(() => {
-    const checkNotificationPermission = async () => {
-      if (typeof window === 'undefined' || !user) return; // 서버사이드 렌더링 환경 및 user 상태 확인
-
-      const storedPermission = localStorage.getItem(
-        'notificationPermission'
-      );
-      if (
-        Notification.permission === 'default' &&
-        !storedPermission
-      ) {
-        setModalVisible(true); // 권한 요청 모달 열기
-      } else if (
-        Notification.permission === 'granted' &&
-        !storedPermission
-      ) {
-        localStorage.setItem(
-          'notificationPermission',
-          'granted'
-        );
-        await requestFcmToken(
-          messaging as Messaging,
-          user!.id.toString()
-        ); // 파라미터로 messaging과 userId 전달
-      } else if (Notification.permission === 'denied') {
-        localStorage.setItem(
-          'notificationPermission',
-          'denied'
-        );
-      }
-    };
-
-    checkNotificationPermission();
-  }, [user]); // user 상태가 변경될 때만 실행
+  }, [router, user]);
 
   const requestNotificationPermission = async () => {
     const permission =
@@ -162,7 +117,7 @@ const Main: React.FC = () => {
       await requestFcmToken(
         messaging as Messaging,
         user!.id.toString()
-      ); // 파라미터로 messaging과 userId 전달
+      );
     } else if (permission === 'denied') {
       localStorage.setItem(
         'notificationPermission',
