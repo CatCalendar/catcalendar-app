@@ -5,10 +5,9 @@ import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import Calendar from '../../components/calendar';
 import NicknameModal from '../../components/modal/nicknamemodal';
-import '../styles/pages/main.scss';
+import '../../styles/pages/main.scss';
 import NotificationModal from '../../components/modal/notificationmodal';
 import Image from 'next/image';
-import { handleLogin } from '@/function/handlelogin';
 import { requestFcmToken } from '@/function/requestFcmToken';
 import { useDispatch } from 'react-redux';
 import {
