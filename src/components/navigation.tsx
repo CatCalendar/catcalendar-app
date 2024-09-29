@@ -1,7 +1,6 @@
 'use client'; // 클라이언트 컴포넌트임을 명시
 
 import React from 'react';
-import Link from 'next/link';
 import '../styles/components/navigation.scss';
 import {
   faCalendar,
