@@ -51,6 +51,9 @@ const Main: React.FC = () => {
 
       const userId = localStorage.getItem('userId');
       const token = localStorage.getItem('token');
+
+      console.log('userId:', userId);
+      console.log('token:', token);
       if (!userId || !token) {
         console.log('사용자 정보가 없습니다.');
         return;
@@ -64,7 +67,7 @@ const Main: React.FC = () => {
           }
         );
         setUser(userInfoResponse.data);
-
+        console.log('사용자 정보:', userInfoResponse.data);
         // 닉네임이 없으면 모달창 열기
         if (!userInfoResponse.data.nickname) {
           setIsModalOpen(true);
