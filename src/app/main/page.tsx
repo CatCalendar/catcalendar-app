@@ -86,7 +86,7 @@ const Main: React.FC = () => {
     const storedPermission = localStorage.getItem(
       'notificationPermission'
     );
-
+    console.log('storedPermission:', storedPermission);
     // 알림 권한을 한 번도 허용한 적이 없을 때만 모달을 띄움
     if (
       (!storedPermission &&
