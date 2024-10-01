@@ -8,6 +8,7 @@ export const requestFcmToken = async (
 ) => {
   try {
     const fcmToken = await getToken(messaging);
+
     if (fcmToken) {
       const fcmResponse = await axios.post(
         '/api/save-token',
@@ -16,13 +17,22 @@ export const requestFcmToken = async (
           userId: userId,
         }
       );
-      localStorage.setItem(
-        'fcmToken',
-        fcmResponse.data.token
-      );
-      console.log(
-        'FCM 토큰이 로컬 스토리지에 저장되었습니다.'
-      );
+
+      if (fcmResponse.status === 200) {
+        localStorage.setItem(
+          'fcmToken',
+          fcmResponse.data.token
+        );
+        console.log(
+          'FCM 토큰이 로컬 스토리지에 저장되었습니다:',
+          fcmResponse.data.token
+        );
+      } else {
+        console.warn(
+          'FCM 토큰 저장 실패, 응답 상태:',
+          fcmResponse.status
+        );
+      }
     } else {
       console.warn('FCM 토큰을 가져올 수 없습니다.');
     }

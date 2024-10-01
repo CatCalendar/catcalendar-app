@@ -53,7 +53,18 @@ const Main: React.FC = () => {
     const storedPermission = localStorage.getItem(
       'notificationPermission'
     );
+    if (storedPermission == 'granted') {
+      const fcmToken = await requestFcmToken(
+        messaging as Messaging,
+        user!.id.toString()
+      );
 
+      if (fcmToken!) {
+        console.log('FCM 토큰 요청 성공:', fcmToken);
+      } else {
+        console.warn('FCM 토큰을 가져올 수 없습니다.');
+      }
+    }
     // 알림 권한을 한 번도 허용한 적이 없을 때만 팝업 띄우기
     if (!storedPermission) {
       console.log('알림 권한 요청 중...1');
@@ -65,16 +76,6 @@ const Main: React.FC = () => {
           'notificationPermission',
           'granted'
         );
-        const fcmToken = await requestFcmToken(
-          messaging as Messaging,
-          user!.id.toString()
-        );
-
-        if (fcmToken!) {
-          console.log('FCM 토큰 요청 성공:', fcmToken);
-        } else {
-          console.warn('FCM 토큰을 가져올 수 없습니다.');
-        }
       } else if (permission === 'denied') {
         console.warn('알림 권한이 거부되었습니다.');
         localStorage.setItem(
