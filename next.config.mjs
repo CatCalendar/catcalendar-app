@@ -23,13 +23,13 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'http',
-        hostname: 'k.kakaocdn.net',
+        protocol: 'https',
+        hostname: 'img1.kakaocdn.net',
         pathname: '/**',
       },
       {
         protocol: 'https',
-        hostname: 'img1.kakaocdn.net',
+        hostname: 't1.kakaocdn.net',
         pathname: '/**',
       },
     ],

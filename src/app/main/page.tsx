@@ -32,7 +32,7 @@ const Main: React.FC = () => {
   const router = useRouter();
   const dispatch = useDispatch();
 
-  // 1. 로컬 스토리지에서 user 정보를 불러옴
+  // 로컬 스토리지에서 user 정보를 불러옴
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
@@ -40,7 +40,7 @@ const Main: React.FC = () => {
     }
   }, []);
 
-  // 2. 클라이언트에서만 localStorage에서 상태 불러오기
+  // 클라이언트에서 localStorage에서 상태 불러오기
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const loadedState = loadState();
@@ -50,92 +50,48 @@ const Main: React.FC = () => {
     }
   }, [dispatch]);
 
-  // 3. 토큰만 갱신하는 함수
-  const refreshToken = async (userId: string) => {
-    try {
-      const refreshResponse = await axios.post(
-        '/api/user/refreshToken',
-        { userId }
-      );
-      const newToken = refreshResponse.data.token;
-      localStorage.setItem('token', newToken);
-      console.log('새 토큰이 발급되었습니다.');
-    } catch (refreshError) {
-      console.error(
-        '토큰 재발급 중 오류 발생:',
-        refreshError
-      );
-    }
-  };
-
-  // 4. 토큰을 새로 갱신하고 user 정보가 없으면 서버에서 가져오기
-  useEffect(() => {
-    const fetchData = async () => {
-      const userId = localStorage.getItem('userId');
-      const token = localStorage.getItem('token');
-
-      if (!userId || !token) {
-        console.log('사용자 정보가 없습니다.');
-        return;
-      }
-
-      // 5. 로컬에 저장된 user 정보가 없으면 서버에서 불러옴
-      if (!user) {
-        try {
-          const userInfoResponse = await axios.get(
-            `/api/user/info?user_id=${userId}`,
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            }
-          );
-          setUser(userInfoResponse.data);
-          localStorage.setItem(
-            'user',
-            JSON.stringify(userInfoResponse.data)
-          ); // user 정보 로컬에 저장
-        } catch (error) {
-          console.error(
-            '사용자 정보를 가져오는 중 오류 발생:',
-            error
-          );
-        }
-      } else {
-        // 6. 이미 로컬에 user 정보가 있으면 토큰만 갱신
-        await refreshToken(userId);
-      }
-    };
-
-    fetchData();
-  }, [router, user]);
-
+  // 알림 권한 요청 함수
   const requestNotificationPermission = async () => {
-    const permission =
-      await Notification.requestPermission();
-    if (permission === 'granted') {
-      console.log('알림 권한이 부여되었습니다.');
-      localStorage.setItem(
-        'notificationPermission',
-        'granted'
-      );
-      // FCM 토큰 요청
-      const fcmToken = await requestFcmToken(
-        messaging as Messaging,
-        user!.id.toString()
-      );
+    const storedPermission = localStorage.getItem(
+      'notificationPermission'
+    );
 
-      if (fcmToken!) {
-        console.log('FCM 토큰 요청 성공:', fcmToken);
-      } else {
-        console.warn('FCM 토큰을 가져올 수 없습니다.');
+    // 알림 권한을 한 번도 허용한 적이 없을 때만 팝업 띄우기
+    if (!storedPermission) {
+      const permission =
+        await Notification.requestPermission();
+      if (permission === 'granted') {
+        console.log('알림 권한이 부여되었습니다.');
+        localStorage.setItem(
+          'notificationPermission',
+          'granted'
+        );
+        const fcmToken = await requestFcmToken(
+          messaging as Messaging,
+          user!.id.toString()
+        );
+
+        if (fcmToken!) {
+          console.log('FCM 토큰 요청 성공:', fcmToken);
+        } else {
+          console.warn('FCM 토큰을 가져올 수 없습니다.');
+        }
+      } else if (permission === 'denied') {
+        console.warn('알림 권한이 거부되었습니다.');
+        localStorage.setItem(
+          'notificationPermission',
+          'denied'
+        );
       }
-    } else if (permission === 'denied') {
-      console.warn('알림 권한이 거부되었습니다.');
-      localStorage.setItem(
-        'notificationPermission',
-        'denied'
-      );
     }
   };
+
+  // 페이지가 로드될 때 알림 권한 확인 및 요청
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      requestNotificationPermission();
+    }
+  }, [user]);
 
   const handleNicknameSubmitSuccess = (
     nickname: string
