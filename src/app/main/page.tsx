@@ -51,7 +51,7 @@ const Main: React.FC = () => {
   const requestNotificationPermission = async () => {
     try {
       // 권한이 'default' 상태일 때만 requestPermission 호출
-      let permission =
+      const permission =
         Notification.permission === 'default'
           ? await Notification.requestPermission() // 처음 권한 요청
           : Notification.permission; // 이미 권한이 설정된 경우
