@@ -34,6 +34,7 @@ const Main: React.FC = () => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       setUser(JSON.parse(storedUser));
+      requestNotificationPermission();
     }
   }, []);
 
@@ -50,6 +51,8 @@ const Main: React.FC = () => {
   // 알림 권한 요청 함수
   const requestNotificationPermission = async () => {
     try {
+      console.log('알림 권한 요청 중...', user);
+
       // 권한이 'default' 상태일 때만 requestPermission 호출
       const permission =
         Notification.permission === 'default'
@@ -83,11 +86,6 @@ const Main: React.FC = () => {
     }
   };
 
-  // 페이지가 로드될 때 알림 권한 확인 및 요청
-  useEffect(() => {
-    requestNotificationPermission();
-  }, [user]);
-
   const handleNicknameSubmitSuccess = (
     nickname: string
   ) => {
@@ -100,11 +98,6 @@ const Main: React.FC = () => {
   const handleModalClose = () => {
     setIsModalOpen(false);
   };
-
-  // const handleAllowNotifications = () => {
-  //   requestNotificationPermission();
-  //   setModalVisible(false); // 모달 닫기
-  // };
 
   return (
     <div className="main-page">
@@ -134,12 +127,6 @@ const Main: React.FC = () => {
           onClose={handleModalClose}
         />
       )}
-
-      {/* <NotificationModal
-        visible={modalVisible}
-        onClose={() => setModalVisible(false)}
-        onAllow={handleAllowNotifications}
-      /> */}
     </div>
   );
 };
