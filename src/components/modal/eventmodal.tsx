@@ -121,7 +121,7 @@ const EventModal: React.FC<EventModalProps> = ({
         onOk(newEventDetails); // 상위 컴포넌트에 저장된 이벤트 정보 전달
 
         // 푸시 알림 전송
-        await axios.post('/api/fcm', {
+        await axios.post('/api/send-notification', {
           message: {
             token: localStorage.getItem('fcmToken'),
             title: eventDetails.title,
