@@ -1,12 +1,8 @@
 import type { Metadata } from 'next';
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React from 'react';
 import Navigation from '../components/navigation';
 import ClientProvider from './ClientProvider'; // 새로 만든 ClientProvider 컴포넌트를 import
 import '../styles/global.scss';
-import { requestFcmToken } from '@/function/requestFcmToken'; // FCM 토큰 요청 함수
-import { messaging } from '../../firebase/firebase-config'; // Firebase Messaging import
-import { Messaging } from 'firebase/messaging';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -18,78 +14,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [isPermissionChecked, setIsPermissionChecked] =
-    useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [fcmToken, setFcmToken] = useState<string | null>(
-    null
-  );
-  const router = useRouter();
-
-  // 알림 권한을 체크하고 요청하는 함수
-  const checkNotificationPermission = async () => {
-    const storedPermission = localStorage.getItem(
-      'notificationPermission'
-    );
-
-    if (
-      Notification.permission === 'default' &&
-      !storedPermission
-    ) {
-      setModalVisible(true); // 권한 요청 모달 열기
-    } else if (
-      Notification.permission === 'granted' &&
-      !storedPermission
-    ) {
-      localStorage.setItem(
-        'notificationPermission',
-        'granted'
-      );
-      // FCM 토큰 요청
-      const token = await requestFcmToken(
-        messaging as Messaging,
-        'userId'
-      );
-      setFcmToken(token!);
-    } else if (Notification.permission === 'denied') {
-      localStorage.setItem(
-        'notificationPermission',
-        'denied'
-      );
-    }
-
-    setIsPermissionChecked(true);
-  };
-
-  useEffect(() => {
-    if (!isPermissionChecked) {
-      checkNotificationPermission();
-    }
-  }, [isPermissionChecked]);
-
-  const handleAllowNotifications = async () => {
-    const permission =
-      await Notification.requestPermission();
-    if (permission === 'granted') {
-      localStorage.setItem(
-        'notificationPermission',
-        'granted'
-      );
-      const token = await requestFcmToken(
-        messaging as Messaging,
-        'userId'
-      );
-      setFcmToken(token!);
-      console.log('FCM 토큰:', token);
-    } else {
-      localStorage.setItem(
-        'notificationPermission',
-        'denied'
-      );
-    }
-    setModalVisible(false); // 모달 닫기
-  };
-
   return (
     <html lang="ko">
       <body>
@@ -99,18 +23,6 @@ export default function RootLayout({
             <Navigation />
           </div>
         </ClientProvider>
-        {/* 모달 띄우기: 권한 요청 */}
-        {modalVisible && (
-          <div className="modal">
-            <div className="modal-content">
-              <h2>알림 권한 요청</h2>
-              <p>알림을 수신하려면 권한을 허용해주세요.</p>
-              <button onClick={handleAllowNotifications}>
-                허용
-              </button>
-            </div>
-          </div>
-        )}
       </body>
     </html>
   );
