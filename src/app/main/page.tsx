@@ -49,11 +49,17 @@ const Main: React.FC = () => {
 
   // 알림 권한 요청 함수
   const requestNotificationPermission = async () => {
-    console.log('알림 권한 요청 중...');
-    const storedPermission = localStorage.getItem(
-      'notificationPermission'
-    );
-    if (storedPermission == 'granted') {
+    const permission =
+      Notification.permission === 'default'
+        ? await Notification.requestPermission()
+        : Notification.permission;
+
+    if (permission === 'granted') {
+      console.log('알림 권한이 부여되었습니다.');
+      localStorage.setItem(
+        'notificationPermission',
+        'granted'
+      );
       const fcmToken = await requestFcmToken(
         messaging as Messaging,
         user!.id.toString()
@@ -64,37 +70,30 @@ const Main: React.FC = () => {
       } else {
         console.warn('FCM 토큰을 가져올 수 없습니다.');
       }
-    }
-    // 알림 권한을 한 번도 허용한 적이 없을 때만 팝업 띄우기
-    if (!storedPermission) {
-      console.log('알림 권한 요청 중...1');
-      const permission =
-        await Notification.requestPermission();
-      if (permission === 'granted') {
-        console.log('알림 권한이 부여되었습니다.');
-        localStorage.setItem(
-          'notificationPermission',
-          'granted'
-        );
-      } else if (permission === 'denied') {
-        console.warn('알림 권한이 거부되었습니다.');
-        localStorage.setItem(
-          'notificationPermission',
-          'denied'
-        );
-      }
+    } else if (permission === 'denied') {
+      console.warn('알림 권한이 거부되었습니다.');
+      localStorage.setItem(
+        'notificationPermission',
+        'denied'
+      );
+    } else if (permission === 'default') {
+      console.log('알림 권한 요청 중...');
     }
   };
 
   // 페이지가 로드될 때 알림 권한 확인 및 요청
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      console.log('유저 정보', user);
-      console.log(
-        '알림 권한',
-        localStorage.getItem('notificationPermission')
-      );
-      requestNotificationPermission();
+    const storedPermission = localStorage.getItem(
+      'notificationPermission'
+    );
+
+    // 알림 권한을 한 번도 허용한 적이 없을 때만 모달을 띄움
+    if (
+      (!storedPermission &&
+        Notification.permission === 'default') ||
+      storedPermission === 'denied'
+    ) {
+      setModalVisible(true); // 모달을 먼저 띄움
     }
   }, [user]);
 
@@ -113,7 +112,7 @@ const Main: React.FC = () => {
 
   const handleAllowNotifications = () => {
     requestNotificationPermission();
-    setModalVisible(false);
+    setModalVisible(false); // 모달 닫기
   };
 
   return (
