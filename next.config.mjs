@@ -23,7 +23,7 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
+        protocol: 'http', // HTTP 이미지 허용
         hostname: 'img1.kakaocdn.net',
         pathname: '/**',
       },
