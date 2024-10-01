@@ -49,18 +49,22 @@ const Main: React.FC = () => {
 
   // 알림 권한 요청 함수
   const requestNotificationPermission = async () => {
+    // 사용자가 이미 권한을 부여했는지 확인
     const permission =
       Notification.permission === 'default'
-        ? await Notification.requestPermission()
-        : Notification.permission;
+        ? await Notification.requestPermission() // 처음 권한 요청
+        : Notification.permission; // 이미 권한이 설정된 경우
 
     console.log('ok 누른 후:', permission);
+    // 권한이 granted인 경우에만 FCM 토큰 요청
     if (permission === 'granted') {
       console.log('알림 권한이 부여되었습니다.');
       localStorage.setItem(
         'notificationPermission',
         'granted'
       );
+
+      // FCM 토큰 요청
       const fcmToken = await requestFcmToken(
         messaging as Messaging,
         user!.id.toString()
@@ -71,14 +75,8 @@ const Main: React.FC = () => {
       } else {
         console.warn('FCM 토큰을 가져올 수 없습니다.');
       }
-    } else if (permission === 'denied') {
-      console.warn('알림 권한이 거부되었습니다.');
-      localStorage.setItem(
-        'notificationPermission',
-        'denied'
-      );
-    } else if (permission === 'default') {
-      console.log('알림 권한 요청 중...');
+    } else {
+      console.warn('알림 권한이 부여되지 않았습니다.');
     }
   };
 
