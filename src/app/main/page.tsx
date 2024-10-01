@@ -1,8 +1,6 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import axios from 'axios';
 import Calendar from '../../components/calendar';
 import NicknameModal from '../../components/modal/nicknamemodal';
 import '../../styles/pages/main.scss';
@@ -29,7 +27,6 @@ const Main: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const router = useRouter();
   const dispatch = useDispatch();
 
   // 로컬 스토리지에서 user 정보를 불러옴
