@@ -120,16 +120,41 @@ const EventModal: React.FC<EventModalProps> = ({
         message.success('이벤트가 저장되었습니다.');
         onOk(newEventDetails); // 상위 컴포넌트에 저장된 이벤트 정보 전달
 
-        // 푸시 알림 전송
-        await axios.post('/api/send-notification', {
-          message: {
-            token: localStorage.getItem('fcmToken'),
-            title: eventDetails.title,
-            body: `이벤트가 성공적으로 저장되었습니다: ${eventDetails.title}`,
-            click_action: '/', // 클릭 시 이동할 링크
-          },
-        });
+        try {
+          // 푸시 알림 전송
+          const notificationResponse = await axios.post(
+            '/api/send-notification',
+            {
+              message: {
+                token: localStorage.getItem('fcmToken'),
+                title: eventDetails.title,
+                body: `이벤트가 성공적으로 저장되었습니다: ${eventDetails.title}`,
+                click_action: '/', // 클릭 시 이동할 링크
+              },
+            }
+          );
 
+          if (notificationResponse.status === 200) {
+            console.log(
+              '알림이 성공적으로 전송되었습니다.'
+            );
+          } else {
+            console.warn(
+              '알림 전송 실패:',
+              notificationResponse.status
+            );
+          }
+        } catch (notificationError) {
+          console.error(
+            '알림 전송 중 오류 발생:',
+            notificationError
+          );
+          message.error(
+            '알림 전송 중 오류가 발생했습니다.'
+          );
+        }
+
+        // 이벤트 상태 초기화
         setEventDetails({
           id: 0,
           title: '',
