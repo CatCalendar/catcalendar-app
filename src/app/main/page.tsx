@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Calendar from '../../components/calendar';
 import NicknameModal from '../../components/modal/nicknamemodal';
 import '../../styles/pages/main.scss';
-import NotificationModal from '../../components/modal/notificationmodal';
+// import NotificationModal from '../../components/modal/notificationmodal';
 import Image from 'next/image';
 import { requestFcmToken } from '@/function/requestFcmToken';
 import { useDispatch } from 'react-redux';
@@ -26,7 +26,7 @@ interface User {
 const Main: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
+  // const [modalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
 
   // 로컬 스토리지에서 user 정보를 불러옴
