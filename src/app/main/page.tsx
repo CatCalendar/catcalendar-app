@@ -54,6 +54,7 @@ const Main: React.FC = () => {
         ? await Notification.requestPermission()
         : Notification.permission;
 
+    console.log('ok 누른 후:', permission);
     if (permission === 'granted') {
       console.log('알림 권한이 부여되었습니다.');
       localStorage.setItem(

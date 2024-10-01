@@ -206,11 +206,14 @@ const Calendar: React.FC = () => {
         month,
         date
       ).getDay();
-      const eventsForDate = events?.filter(
-        (event) =>
-          new Date(event.date).toDateString() ===
+      const eventsForDate = events?.filter((event) => {
+        // event.date가 Date 객체가 아니라면 변환
+        const eventDate = new Date(event.date);
+        return (
+          eventDate.toDateString() ===
           new Date(year, month, date).toDateString()
-      );
+        );
+      });
 
       daysArray.push(
         <div
