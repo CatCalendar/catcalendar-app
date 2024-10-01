@@ -50,6 +50,8 @@ const Main: React.FC = () => {
   // 알림 권한 요청 함수
   const requestNotificationPermission = async () => {
     // 사용자가 이미 권한을 부여했는지 확인
+
+    console.log('ok 누르기 전:', Notification.permission);
     const permission =
       Notification.permission === 'default'
         ? await Notification.requestPermission() // 처음 권한 요청
@@ -86,6 +88,10 @@ const Main: React.FC = () => {
       'notificationPermission'
     );
     console.log('storedPermission:', storedPermission);
+    console.log(
+      '저장된거 불러오는:',
+      Notification.permission
+    );
     // 알림 권한을 한 번도 허용한 적이 없을 때만 모달을 띄움
     if (
       !storedPermission ||
