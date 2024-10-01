@@ -50,15 +50,11 @@ const Main: React.FC = () => {
   // 알림 권한 요청 함수
   const requestNotificationPermission = async () => {
     try {
-      console.log('ok 누르기 전:', Notification.permission);
-
       // 권한이 'default' 상태일 때만 requestPermission 호출
       let permission =
         Notification.permission === 'default'
           ? await Notification.requestPermission() // 처음 권한 요청
           : Notification.permission; // 이미 권한이 설정된 경우
-
-      console.log('ok 누른 후:', permission);
 
       // 권한이 granted인 경우에만 FCM 토큰 요청
       if (permission === 'granted') {
@@ -89,22 +85,7 @@ const Main: React.FC = () => {
 
   // 페이지가 로드될 때 알림 권한 확인 및 요청
   useEffect(() => {
-    const storedPermission = localStorage.getItem(
-      'notificationPermission'
-    );
-    console.log('storedPermission:', storedPermission);
-    console.log(
-      '저장된거 불러오는:',
-      Notification.permission
-    );
-    // 알림 권한을 한 번도 허용한 적이 없을 때만 모달을 띄움
-    if (
-      !storedPermission ||
-      Notification.permission === 'default' ||
-      storedPermission === 'denied'
-    ) {
-      setModalVisible(true); // 모달을 먼저 띄움
-    }
+    requestNotificationPermission();
   }, [user]);
 
   const handleNicknameSubmitSuccess = (
@@ -120,10 +101,10 @@ const Main: React.FC = () => {
     setIsModalOpen(false);
   };
 
-  const handleAllowNotifications = () => {
-    requestNotificationPermission();
-    setModalVisible(false); // 모달 닫기
-  };
+  // const handleAllowNotifications = () => {
+  //   requestNotificationPermission();
+  //   setModalVisible(false); // 모달 닫기
+  // };
 
   return (
     <div className="main-page">
@@ -154,11 +135,11 @@ const Main: React.FC = () => {
         />
       )}
 
-      <NotificationModal
+      {/* <NotificationModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
         onAllow={handleAllowNotifications}
-      />
+      /> */}
     </div>
   );
 };
