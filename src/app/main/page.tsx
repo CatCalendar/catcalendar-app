@@ -90,8 +90,8 @@ const Main: React.FC = () => {
     console.log('storedPermission:', storedPermission);
     // 알림 권한을 한 번도 허용한 적이 없을 때만 모달을 띄움
     if (
-      (!storedPermission &&
-        Notification.permission === 'default') ||
+      !storedPermission ||
+      Notification.permission === 'default' ||
       storedPermission === 'denied'
     ) {
       setModalVisible(true); // 모달을 먼저 띄움
