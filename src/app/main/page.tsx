@@ -49,12 +49,14 @@ const Main: React.FC = () => {
 
   // 알림 권한 요청 함수
   const requestNotificationPermission = async () => {
+    console.log('알림 권한 요청 중...');
     const storedPermission = localStorage.getItem(
       'notificationPermission'
     );
 
     // 알림 권한을 한 번도 허용한 적이 없을 때만 팝업 띄우기
     if (!storedPermission) {
+      console.log('알림 권한 요청 중...1');
       const permission =
         await Notification.requestPermission();
       if (permission === 'granted') {
@@ -86,6 +88,11 @@ const Main: React.FC = () => {
   // 페이지가 로드될 때 알림 권한 확인 및 요청
   useEffect(() => {
     if (typeof window !== 'undefined') {
+      console.log('유저 정보', user);
+      console.log(
+        '알림 권한',
+        localStorage.getItem('notificationPermission')
+      );
       requestNotificationPermission();
     }
   }, [user]);
