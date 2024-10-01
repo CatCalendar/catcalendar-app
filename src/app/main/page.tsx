@@ -49,36 +49,41 @@ const Main: React.FC = () => {
 
   // 알림 권한 요청 함수
   const requestNotificationPermission = async () => {
-    // 사용자가 이미 권한을 부여했는지 확인
+    try {
+      console.log('ok 누르기 전:', Notification.permission);
 
-    console.log('ok 누르기 전:', Notification.permission);
-    const permission =
-      Notification.permission === 'default'
-        ? await Notification.requestPermission() // 처음 권한 요청
-        : Notification.permission; // 이미 권한이 설정된 경우
+      // 권한이 'default' 상태일 때만 requestPermission 호출
+      let permission =
+        Notification.permission === 'default'
+          ? await Notification.requestPermission() // 처음 권한 요청
+          : Notification.permission; // 이미 권한이 설정된 경우
 
-    console.log('ok 누른 후:', permission);
-    // 권한이 granted인 경우에만 FCM 토큰 요청
-    if (permission === 'granted') {
-      console.log('알림 권한이 부여되었습니다.');
-      localStorage.setItem(
-        'notificationPermission',
-        'granted'
-      );
+      console.log('ok 누른 후:', permission);
 
-      // FCM 토큰 요청
-      const fcmToken = await requestFcmToken(
-        messaging as Messaging,
-        user!.id.toString()
-      );
+      // 권한이 granted인 경우에만 FCM 토큰 요청
+      if (permission === 'granted') {
+        console.log('알림 권한이 부여되었습니다.');
+        localStorage.setItem(
+          'notificationPermission',
+          'granted'
+        );
 
-      if (fcmToken!) {
-        console.log('FCM 토큰 요청 성공:', fcmToken);
+        // FCM 토큰 요청
+        const fcmToken = await requestFcmToken(
+          messaging as Messaging,
+          user!.id.toString()
+        );
+
+        if (fcmToken!) {
+          console.log('FCM 토큰 요청 성공:', fcmToken);
+        } else {
+          console.warn('FCM 토큰을 가져올 수 없습니다.');
+        }
       } else {
-        console.warn('FCM 토큰을 가져올 수 없습니다.');
+        console.warn('알림 권한이 부여되지 않았습니다.');
       }
-    } else {
-      console.warn('알림 권한이 부여되지 않았습니다.');
+    } catch (error) {
+      console.error('알림 권한 요청 중 오류 발생:', error);
     }
   };
 
